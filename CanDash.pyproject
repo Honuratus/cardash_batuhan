@@ -1,0 +1,8 @@
+{
+    "files": [
+        "main.py",
+        "main.qml",
+        "apple.png",
+        "CircularBar.qml"
+    ]
+}
