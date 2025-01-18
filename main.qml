@@ -97,10 +97,12 @@ Window {
     }
 
     CircularBar{
+        property int currentSpeed: 0
+
         id: speed
         progressColor: "#218130"
         anchors.left: parent.left
-        value: 0
+        value: currentSpeed * 77 / 200
         anchors.leftMargin: 100
         anchors.verticalCenter: parent.verticalCenter
         textValue: parseInt(speed.value * 200 / 77) //progress.textShowValue ? parseInt(progress.value * 200/77) + progress.textValue
@@ -117,35 +119,14 @@ Window {
         }
         Behavior on value{
             PropertyAnimation{
-                duration: 5000
-            }
-        }
-
-        MouseArea{
-            anchors.fill: parent
-            onPressed: {
-                timer.start()
-            }
-
-            onReleased: {
-                timer.stop()
-            }
-        }
-        Timer {
-            id:timer
-            interval: 1; running: false; repeat: true
-            onTriggered: {
-                speed.value += speed.value >= 77 ? 0 : 100
-            }
-
-            onRunningChanged: {
-                speed.value = 0
+                duration: 300
             }
         }
 
     }
     // rpm
     CircularBar{
+        property var currentRpm: 0
         id: devir
         anchors.right: parent.right
         anchors.rightMargin: 100
@@ -153,7 +134,7 @@ Window {
         titleTextValue: "1000x"
         textValue: parseInt(value / 7.7)
         imageSource: "images/rpmmeter.png"
-        value: 0
+        value: currentRpm * 7.7
         onValueChanged: {
             if (devir.value <= 8 * 7.7){
                 devir.progressColor = "green" // FDAB09
@@ -164,33 +145,18 @@ Window {
         }
         Behavior on value{
             PropertyAnimation{
-                duration: 5000
+                duration: 300
             }
         }
-
-        MouseArea{
-            anchors.fill: parent
-            onPressed: {
-                rpmTimer.start()
-            }
-
-            onReleased: {
-                rpmTimer.stop()
-            }
+    }
+    Connections{
+    target: canConnector
+        function onSpeed(s){
+            speed.currentSpeed = s;
         }
-        Timer {
-            id:rpmTimer
-            interval: 1; running: false; repeat: true
-            onTriggered: {
-                devir.value += devir.value >= 77 ? 0 : 100
-            }
-
-            onRunningChanged: {
-                devir.value = 0
-            }
+        function onRpm(r){
+            devir.currentRpm = r;
         }
-
-
     }
     Item{
         id: signalContainer
